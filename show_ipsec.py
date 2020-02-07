@@ -1,6 +1,10 @@
 import paramiko
+import requests
+import settings
+
 from datetime import datetime
 from time import sleep
+
 
 host = '192.168.5.1'
 user = 'admin'
@@ -8,6 +12,24 @@ secret = 'password'
 port = 22
 command = 'show ipsec'
 encoding = 'utf-8'
+
+
+def send_telegram(text: str):
+
+    url = "https://api.telegram.org/bot" + settings.token
+    chat_id = settings.chat_id
+
+    method = url + "/sendMessage"
+
+    r = requests.post(method, data={
+         "chat_id": chat_id,
+         "text": text
+          })
+
+    if r.status_code != 200:
+        print('Error send to telegram')
+
+
 while True:
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
